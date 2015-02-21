@@ -1,13 +1,8 @@
 package com.example.windows7.balooloo;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -17,116 +12,100 @@ import java.util.Random;
  * Created by Windows7 on 21.02.2015.
  */
 public class GameView extends MainView implements View.OnTouchListener {
+    private GameActivity game;
 
+    private final int BackColor = Color.WHITE;
 
-    private  GameActivity game;
+    private final Random random = new Random();
 
-    //variables
-    private Random random = new Random();
+    private final Controller controller = new Controller();
 
-    private float px, py;
-    private float vx, vy;
-    private float radius = 32; // Get percent from window sizes?
+    private final float radius = 32; // Get percent from window sizes?
+    private final Source source = new Source(radius);
+    private final Target target = new Target(2 * radius);
 
-    private float a = 0.96f; // Find correct value and expresion.
+    private void InitGame() {
+        this.source.Init(this.random, GameActivity.currentScreenWidth, GameActivity.currentScreenHeight);
 
-    private float tx, ty;
-
-    private float eps = 0.5f;
-
-    private int mx0, my0, mx1, my1;
-
-
-    private void Init()
-    {
-        float Width =  GameActivity.currentScreenWidth;
-        float Height = GameActivity.currentScreenHeight;
-
-        this.px = this.radius + (Width - 2 * this.radius) * (float)this.random.nextDouble();
-        this.py = this.radius + (Height - 2 * this.radius) * (float)this.random.nextDouble();
-
-        this.tx = 2 * this.radius + (Width - 4 * this.radius) * (float)this.random.nextDouble();
-        this.ty = 2 * this.radius + (Height - 4 * this.radius) * (float)this.random.nextDouble();
+        this.InitRound();
     }
 
-    private void Finish()
-    {
-        double x = tx - px;
-        double y = ty - py;
-        double d = Math.sqrt(x * x + y * y) - 3 * radius;
-
-        if (d < 0)
-        {
-            this.Init();
-        }
+    private void InitRound() {
+        this.target.Init(this.random, GameActivity.currentScreenWidth, GameActivity.currentScreenHeight);
     }
 
     public GameView(Context context, GameActivity game) {
         super(context);
 
-        this.Init();
         this.game = game;
 
-        setOnTouchListener(this);
+        this.setOnTouchListener(this);
 
         GameActivity.getScreenSize(getContext());
+
+        this.InitGame();
     }
 
     @Override
     public void update(long elapsedMilliseconds) {
         super.update(elapsedMilliseconds);
 
+        if (GameActivity.currentScreenWidth < radius || GameActivity.currentScreenHeight < radius) {
+            return;
+        }
 
-    }
+        this.source.Move(GameActivity.currentScreenWidth, GameActivity.currentScreenHeight, elapsedMilliseconds);
 
-    private void DrawFieldItems(Canvas canvas)
-    {
-        Paint paint = new Paint();
-        paint.setColor(Color.BLUE);
-        paint.setStyle(Paint.Style.FILL);
-
-        RectF rectBlue = new RectF(this.px - this.radius, this.py - this.radius, 2 * this.radius, 2 * this.radius);
-
-        canvas.drawOval(rectBlue, paint);
-
-      // e.Graphics.FillEllipse(Brushes.Blue, this.px - this.radius, this.py - this.radius, 2 * this.radius, 2 * this.radius);
-
-        paint.setColor(Color.RED);
-        paint.setStyle(Paint.Style.STROKE);
-
-        //draw target
-        RectF rectRed =  new RectF(this.tx - 2 * this.radius, this.ty - 2 * this.radius, 4 * this.radius, 4 * this.radius);
-        canvas.drawOval(rectRed, paint);
-
-        //fill target
-        paint.setStyle(Paint.Style.FILL);
-        rectRed =  new RectF( this.tx - this.radius, this.ty - this.radius, 2 * this.radius, 2 * this.radius);
-        canvas.drawOval(rectRed, paint);
-
-      //  e.Graphics.DrawEllipse(Pens.Red, this.tx - 2 * this.radius, this.ty - 2 * this.radius, 4 * this.radius, 4 * this.radius);
-       //e.Graphics.FillEllipse(Brushes.Red, this.tx - this.radius, this.ty - this.radius, 2 * this.radius, 2 * this.radius);
-
-        // draw trjectory
-        paint.setColor(Color.BLACK);
-       // canvas.drawLine(mx0, this.my0, this.mx1, this.my1);
-
-
+        boolean isMove = this.source.IsMove();
+        boolean isTarget = Circle.Distance(this.source, this.target) < 0;
+        if (!isMove && isTarget) {
+            this.InitRound();
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (canvas == null) {
+            return;
+        }
 
-        if (canvas == null) return;
+        canvas.drawColor(this.BackColor);
 
-        canvas.drawColor(Color.WHITE);
-        DrawFieldItems(canvas);
+        this.target.Draw(canvas, Color.RED);
 
+        this.source.Draw(canvas, Color.BLUE);
 
-
+        this.controller.Draw(canvas, Color.LTGRAY);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+//        switch (e.KeyData)
+//        {
+//            case Keys.Escape:
+//                this.Close();
+//                break;
+//            case Keys.F5:
+//                this.InitGame();
+//                break;
+//        }
+
+//        private void Down()
+//        {
+//            this.controller.SetSource(e.X, e.Y);
+//        }
+//        private void Move()
+//        {
+//            this.controller.SetTarget(e.X, e.Y);
+//        }
+//        private void Up()
+//        {
+//            int x = this.controller.GetVectorX();
+//            int y = this.controller.GetVectorY();
+//            this.source.Push(x, y);
+//            this.controller.Clear();
+//        }
+
         return false;
     }
 }
