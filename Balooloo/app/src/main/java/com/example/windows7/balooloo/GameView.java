@@ -1,17 +1,22 @@
 package com.example.windows7.balooloo;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
  * Created by Windows7 on 21.02.2015.
  */
-public class GameView extends MainView implements View.OnTouchListener {
+public class GameView extends MainView  {
     private GameActivity game;
 
     private final int BackColor = Color.WHITE;
@@ -23,6 +28,8 @@ public class GameView extends MainView implements View.OnTouchListener {
     private final float radius = 32; // Get percent from window sizes?
     private final Source source = new Source(radius);
     private final Target target = new Target(2 * radius);
+
+    private List<MenuItem> menuItems;
 
     private void InitGame() {
         this.source.Init(this.random, GameActivity.currentScreenWidth, GameActivity.currentScreenHeight);
@@ -38,12 +45,14 @@ public class GameView extends MainView implements View.OnTouchListener {
         super(context);
 
         this.game = game;
-
-        this.setOnTouchListener(this);
+        this.menuItems = new ArrayList<MenuItem>();
 
         GameActivity.getScreenSize(getContext());
 
         this.InitGame();
+        this.InitMenuElements();
+
+
     }
 
     @Override
@@ -71,6 +80,10 @@ public class GameView extends MainView implements View.OnTouchListener {
 
         canvas.drawColor(this.BackColor);
 
+        for (int i = 0; i< this.menuItems.size(); i++) {
+            this.menuItems.get(i).draw(canvas);
+        }
+
         this.target.Draw(canvas, Color.RED);
 
         this.source.Draw(canvas, Color.BLUE);
@@ -79,16 +92,8 @@ public class GameView extends MainView implements View.OnTouchListener {
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-//        switch (e.KeyData)
-//        {
-//            case Keys.Escape:
-//                this.Close();
-//                break;
-//            case Keys.F5:
-//                this.InitGame();
-//                break;
-//        }
+    public boolean onTouchEvent(MotionEvent event) {
+
 
         int eventX =  (int)event.getX();
         int eventY = (int)event.getY();
@@ -97,6 +102,7 @@ public class GameView extends MainView implements View.OnTouchListener {
             case MotionEvent.ACTION_DOWN: {
                 this.controller.SetSource(eventX, eventY);
 
+                this.optionMenuSelected(eventX, eventY);
                 break;
             }
             case MotionEvent.ACTION_UP:
@@ -113,23 +119,63 @@ public class GameView extends MainView implements View.OnTouchListener {
                 break;
         }
 
+        return true;
+    }
 
-//        private void Down()
-//        {
-//            this.controller.SetSource(e.X, e.Y);
-//        }
-//        private void Move()
-//        {
-//            this.controller.SetTarget(e.X, e.Y);
-//        }
-//        private void Up()
-//        {
-//            int x = this.controller.GetVectorX();
-//            int y = this.controller.GetVectorY();
-//            this.source.Push(x, y);
-//            this.controller.Clear();
-//        }
 
-        return false;
+    //menu
+
+    private void InitMenuElements()
+    {
+
+        float scaleX =  GameActivity.scaleX;
+        float scaleY = GameActivity.scaleY;
+
+        Rect rectRestart = new Rect();
+
+        rectRestart.left = (int)(10 * scaleX);
+        rectRestart.top = (int)(10 * scaleY);
+        rectRestart.right = (int)(80 * scaleX);
+        rectRestart.bottom = (int)(80 * scaleY);
+
+
+        Rect rectMenu = new Rect();
+
+        rectMenu.left = (int)(100 * scaleX);
+        rectMenu.top = (int)(10 * scaleY);
+        rectMenu.right = (int)(180 * scaleX);
+        rectMenu.bottom = (int)(80 * scaleY);
+
+        this.menuItems.add(new MenuItem(ImageManager.MenuRestart_BMP, rectRestart));
+        this.menuItems.add(new MenuItem(ImageManager.MenuItem_BMP, rectMenu));
+
+    }
+
+    private void optionMenuSelected(float  x, float y)
+    {
+
+        int index = -1;
+
+        for (int i = 0; i< this.menuItems.size(); i++) {
+            if (GameActivity.inBounds(this.menuItems.get(i).getRect(), x, y)) {
+                index = i;
+                break;
+            }
+        }
+
+        switch(index)
+        {
+            case 0: // restart
+
+                break;
+
+            case 1: // mainmenu
+                GameActivity.game.changeScreen(Screens.MAIN_MENU);
+                break;
+
+            default:break;
+
+
+        }
     }
 }

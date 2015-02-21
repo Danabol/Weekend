@@ -20,7 +20,7 @@ public class Circle {
     }
 
     public void Draw(Canvas canvas, int color) {
-        RectF rectF = new RectF(this.px - this.radius, this.py - this.radius, 2 * this.radius, 2 * this.radius);
+        RectF rectF = new RectF(this.px - this.radius, this.py - this.radius, this.px + this.radius,  this.py + this.radius);
 
         Paint paint = new Paint();
         paint.setColor(color);

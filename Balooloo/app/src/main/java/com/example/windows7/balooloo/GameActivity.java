@@ -3,6 +3,7 @@ package com.example.windows7.balooloo;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -115,6 +116,11 @@ public class GameActivity extends ActionBarActivity {
         scaleY = currentScreenHeight / TARGET_HEIGHT;
         scaleX = currentScreenWidth / TARGET_WIDTH;
 
+    }
+
+    public static boolean inBounds(Rect rect, float x, float y)
+    {
+        return rect.top <= y && rect.bottom >= y && rect.left <= x && rect.right >= x;
     }
 
     public void changeScreen(int screen_id)

@@ -22,6 +22,15 @@ public class MenuItem implements IDrawable {
         return this.rect;
     }
 
+    public void setImage(Bitmap new_image)
+    {
+        this.bmp = new_image;
+    }
+
+    public Bitmap getImage() {
+        return this.bmp;
+    }
+
     @Override
     public void draw(Canvas canvas) {
 
