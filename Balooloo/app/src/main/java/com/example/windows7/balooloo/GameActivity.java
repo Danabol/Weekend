@@ -66,7 +66,8 @@ public class GameActivity extends ActionBarActivity {
         GameView gameView = new GameView(getApplicationContext(), this);
         this.game = this;
         this.viewDictionary.put(Screens.GAME,gameView);
-       // this.viewDictionary.put(Screens.MAIN_MENU,new GameView(getApplicationContext(), gameView));
+        this.viewDictionary.put(Screens.MAIN_MENU,new MainMenuView(getApplicationContext()));
+        this.viewDictionary.put(Screens.SCORE, new HightScoreView(getApplicationContext()));
 
 
         GameActivity.gameLoopThread = new GameManager();
@@ -74,7 +75,7 @@ public class GameActivity extends ActionBarActivity {
         synchronized (this)
         {
 
-            this.changeScreen(Screens.GAME);
+            this.changeScreen(Screens.MAIN_MENU);
         }
     }
 

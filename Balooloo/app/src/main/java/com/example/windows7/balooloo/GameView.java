@@ -90,6 +90,30 @@ public class GameView extends MainView implements View.OnTouchListener {
 //                break;
 //        }
 
+        int eventX =  (int)event.getX();
+        int eventY = (int)event.getY();
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                this.controller.SetSource(eventX, eventY);
+
+                break;
+            }
+            case MotionEvent.ACTION_UP:
+                int x = this.controller.GetVectorX();
+                int y = this.controller.GetVectorY();
+                this.source.Push(x, y);
+                this.controller.Clear();
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                this.controller.SetTarget(eventX, eventY);
+
+
+                break;
+        }
+
+
 //        private void Down()
 //        {
 //            this.controller.SetSource(e.X, e.Y);

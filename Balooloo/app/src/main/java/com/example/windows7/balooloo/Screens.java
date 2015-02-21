@@ -8,7 +8,7 @@ public class Screens {
     public static final int MAIN_MENU = 0;
     public static final int LEVEL_SELECT = 1;
     public static final int GAME = 2;
-    public static final int LEVEL_FAILED = 3;
-    public static final int LEVEL_PASS = 4;
+    public static final int SCORE = 3;
+
 
 }
