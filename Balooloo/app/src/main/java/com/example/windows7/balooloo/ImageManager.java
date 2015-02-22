@@ -26,6 +26,9 @@ public class ImageManager {
     public static Bitmap NumberFour_BMP = BitmapFactory.decodeResource(GameActivity.game.getResources(), R.drawable.four);
     public static Bitmap NumberFive_BMP = BitmapFactory.decodeResource(GameActivity.game.getResources(), R.drawable.five);
 
+    public static Bitmap Bear_BMP = BitmapFactory.decodeResource(GameActivity.game.getResources(), R.drawable.bear);
 
+    public static Bitmap Grass_BMP =  BitmapFactory.decodeResource(GameActivity.game.getResources(), R.drawable.grass);
+    public static Bitmap Sand_BMP =  BitmapFactory.decodeResource(GameActivity.game.getResources(), R.drawable.sand);
 
 }
